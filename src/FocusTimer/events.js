@@ -1,4 +1,6 @@
-import { controls } from "./elements.js";
+import { controls, minutes } from "./elements.js";
+import { updateDisplay } from "./timer.js";
+import state from "./state.js";
 import * as actions from "./actions.js";
 
 export function registerControls () {
@@ -9,4 +11,23 @@ export function registerControls () {
     }
     actions[action]();
   })
+}
+
+export function setMinutes () {
+  minutes.addEventListener('focus', () => {
+    minutes.textContent = "";
+  });
+
+  minutes.onkeypress = (event) => /\d/.test(event.key);
+
+  minutes.addEventListener('blur', (event) => {
+    let time = event.currentTarget.textContent;
+    time = time > 60 ? 60 : time;
+
+    state.minutes = time;
+    state.seconds = 0;
+
+    updateDisplay();
+    minutes.removeAttribute('contenteditable');
+  });
 }
